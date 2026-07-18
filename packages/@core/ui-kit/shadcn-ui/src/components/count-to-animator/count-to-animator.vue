@@ -50,14 +50,19 @@ const emit = defineEmits<{
   started: [];
 }>();
 
-const source = ref(props.startVal);
+function toNumber(val: unknown) {
+  const n = Number(val);
+  return Number.isFinite(n) ? n : 0;
+}
+
+const source = ref(toNumber(props.startVal));
 const disabled = ref(false);
 let outputValue = useTransition(source);
 
 const value = computed(() => formatNumber(unref(outputValue)));
 
 watchEffect(() => {
-  source.value = props.startVal;
+  source.value = toNumber(props.startVal);
 });
 
 watch([() => props.startVal, () => props.endVal], () => {
@@ -72,11 +77,11 @@ onMounted(() => {
 
 function start() {
   run();
-  source.value = props.endVal;
+  source.value = toNumber(props.endVal);
 }
 
 function reset() {
-  source.value = props.startVal;
+  source.value = toNumber(props.startVal);
   run();
 }
 

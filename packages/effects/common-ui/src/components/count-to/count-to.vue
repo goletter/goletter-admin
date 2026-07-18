@@ -19,16 +19,16 @@ const props = withDefaults(defineProps<CountToProps>(), {
 
 const emit = defineEmits(['started', 'finished']);
 
-const lastValue = ref(props.startVal);
+const lastValue = ref(Number(props.startVal) || 0);
 
 onMounted(() => {
-  lastValue.value = props.endVal;
+  lastValue.value = Number(props.endVal) || 0;
 });
 
 watch(
   () => props.endVal,
   (val) => {
-    lastValue.value = val;
+    lastValue.value = Number(val) || 0;
   },
 );
 

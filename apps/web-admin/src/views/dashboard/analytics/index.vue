@@ -68,60 +68,72 @@ watch(
         }),
       ]);
 
-      // 订阅数据统计
-      if (infoRes.data?.extends) {
-        xData.value = infoRes.data.extends.map((item: any) => item.name);
-        seriesData.value = infoRes.data.extends.map(
-          (item: any) => item.user_count,
-        );
-        seriesData2.value = infoRes.data.extends.map(
-          (item: any) => item.user_money,
-        );
-        totalUserCount.value = infoRes.data.extends.reduce(
+      // 订阅数据统计（兼容数组或对象形式的 extends）
+      const extendsRaw = infoRes.data?.extends;
+      const extendsList = Array.isArray(extendsRaw)
+        ? extendsRaw
+        : extendsRaw && typeof extendsRaw === 'object'
+          ? Object.values(extendsRaw)
+          : [];
+
+      if (extendsList.length > 0) {
+        xData.value = extendsList.map((item: any) => item.name);
+        seriesData.value = extendsList.map((item: any) => item.user_count);
+        seriesData2.value = extendsList.map((item: any) => item.user_money);
+        totalUserCount.value = extendsList.reduce(
           (sum: number, item: any) => sum + Number(item.user_count),
           0,
         );
-        totalUserMoney.value = infoRes.data.extends.reduce(
+        totalUserMoney.value = extendsList.reduce(
           (sum: number, item: any) => sum + Number(item.user_money),
           0,
         );
       }
 
-      // 卡片数据统计
+      // 卡片数据统计（useTransition 需要 number，接口常返回字符串）
+      const toNum = (v: unknown) => {
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
+      };
       overviewItems.value = [
         {
           icon: SvgCardIcon,
           title: '今日订阅次数',
-          value: infoRes.data?.payment_count ?? 0,
+          value: toNum(infoRes.data?.payment_count),
           totalTitle: '总订阅次数',
-          totalValue: infoRes.data?.payment_total_count ?? 0,
+          totalValue: toNum(infoRes.data?.payment_total_count),
         },
         {
           icon: SvgCakeIcon,
           title: '今日营收金额',
-          value: infoRes.data?.payment_amount ?? 0,
+          value: toNum(infoRes.data?.payment_amount),
           totalTitle: '累计营收金额',
-          totalValue: infoRes.data?.payment_total_amount ?? 0,
+          totalValue: toNum(infoRes.data?.payment_total_amount),
         },
         {
           icon: SvgCakeIcon,
           title: '7日新增用户',
-          value: infoRes.data?.register_count ?? 0,
+          value: toNum(infoRes.data?.register_count),
           totalTitle: '总用户数',
-          totalValue: infoRes.data?.register_total_count ?? 0,
+          totalValue: toNum(infoRes.data?.register_total_count),
         },
         {
           icon: SvgCakeIcon,
           title: '7日活跃用户量',
-          value: infoRes.data?.active_total_count ?? 0,
+          value: toNum(infoRes.data?.active_total_count),
           totalTitle: '日活跃量',
-          totalValue: infoRes.data?.active_count ?? 0,
+          totalValue: toNum(infoRes.data?.active_count),
         },
       ];
 
       // 活跃用户数据统计
-      xDataUser.value = combinedRes.data.name;
-      seriesDataUser.value = combinedRes.data.active_total_count;
+      const combinedData = combinedRes.data ?? {};
+      xDataUser.value = Array.isArray(combinedData.name)
+        ? combinedData.name
+        : [];
+      seriesDataUser.value = Array.isArray(combinedData.active_total_count)
+        ? combinedData.active_total_count
+        : [];
     } catch (error) {
       console.error('获取数据失败', error);
     }
