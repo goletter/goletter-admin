@@ -2,12 +2,26 @@ import { defineConfig } from '@vben/vite-config';
 import { loadEnv } from 'vite';
 
 export default defineConfig(async (config) => {
+  const command = config?.command ?? 'serve';
   const mode = config?.mode ?? 'development';
   const env = loadEnv(mode, process.cwd(), '');
   const apiTarget =
     process.env.ELECTRON_API_TARGET ?? env.VITE_DESKTOP_API_TARGET;
+  const serverProxy = apiTarget
+    ? {
+        '/api': {
+          changeOrigin: true,
+          rewrite: (path: string) => path.replace(/^\/api/, ''),
+          // mock代理目标地址
+          // target: 'http://localhost:5320/api',
+          // 本地有后端时优先用 localhost，远程代理会明显拖慢首屏接口
+          target: apiTarget,
+          ws: true,
+        },
+      }
+    : undefined;
 
-  if (!apiTarget) {
+  if (command === 'serve' && !apiTarget) {
     throw new Error(
       `Missing VITE_DESKTOP_API_TARGET in apps/web-admin/.env.${mode}`,
     );
@@ -32,19 +46,7 @@ export default defineConfig(async (config) => {
           'vue-router',
         ],
       },
-      server: {
-        proxy: {
-          '/api': {
-            changeOrigin: true,
-            rewrite: (path) => path.replace(/^\/api/, ''),
-            // mock代理目标地址
-            // target: 'http://localhost:5320/api',
-            // 本地有后端时优先用 localhost，远程代理会明显拖慢首屏接口
-            target: apiTarget,
-            ws: true,
-          },
-        },
-      },
+      server: serverProxy ? { proxy: serverProxy } : undefined,
     },
   };
 });
