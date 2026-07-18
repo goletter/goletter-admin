@@ -16,9 +16,9 @@ export const overridesPreferences = defineOverridesPreferences({
     authPageLayout: 'panel-center',
   },
   copyright: {
-    companyName: 'GeekDance',
-    companySiteLink: 'https://floletic.test.geekdance.cn/admin/',
-    date: '2025',
+    companyName: 'Goletter',
+    companySiteLink: 'https://www.goletter.cn',
+    date: '2026',
   },
   theme: {
     mode: 'light',
