@@ -1,0 +1,27 @@
+{
+  "analytics": {
+    "totalLoanContracts": "ចំនួនសន្យាបញ្ចាំសរុប",
+    "totalLoanAmount": "ចំនួនទឹកប្រាក់បញ្ចាំសរុប",
+    "totalRepaymentAmount": "ចំនួនទឹកប្រាក់សងសរុប",
+    "totalNumberEquipment": "ចំនួនឧបករណ៍សរុប",
+    "totalNumberVehicles": "ចំនួនយានយន្តសរុប",
+    "lendersOfNumber": "ចំនួនអ្នកឲ្យបញ្ចាំ",
+    "itemsToBeProcessed": "ធាតុដែលត្រូវដោះស្រាយ",
+    "outstandingFeesRecord": "កំណត់ត្រាសងថ្លៃដែលនៅគ្រា",
+    "overdueLoansRecord": "កំណត់ត្រាសងបញ្ចាំហួសកំណត់",
+    "expiredSimCard": "ស៊ីមកាតដែលហួសកំណត់",
+    "loanAmountStatistics": "ស្ថិតិចំនួនបញ្ចាំ",
+    "repaymentAmountStatistics": "ស្ថិតិចំនួនសង",
+    "deviceQuantityStatistics": "ស្ថិតិចំនួនឧបករណ៍",
+    "weekly": "សប្តាហ៍នេះ",
+    "monthly": "ខែនេះ",
+    "weeklyTotalLoan": "ចំនួនបញ្ចាំសរុបសប្តាហ៍នេះ",
+    "weeklyTotalDevice": "ចំនួនឧបករណ៍សរុបសប្តាហ៍នេះ",
+    "weeklyTotalRepayment": "ចំនួនសងសរុបសប្តាហ៍នេះ",
+    "monthlyTotalLoan": "ចំនួនបញ្ចាំសរុបខែនេះ",
+    "monthlyTotalRepayment": "ចំនួនសងសរុបខែនេះ",
+    "monthlyTotalDevice": "ចំនួនឧបករណ៍សរុបខែនេះ",
+    "comparedLastWeek": "ប្រៀបធៀបនឹងសប្តាហ៍មុន",
+    "comparedLastMonth": "ប្រៀបធៀបនឹងខែមុន"
+  }
+}

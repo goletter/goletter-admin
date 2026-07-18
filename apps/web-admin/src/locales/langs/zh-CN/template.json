@@ -1,0 +1,16 @@
+{
+  "title": "智能模板配置",
+  "list": {
+    "title": "模板列表",
+    "listName": "模板名称",
+    "status": "状态",
+    "name": "模板",
+    "listTitle": "模板列表"
+  },
+  "edit": {
+    "title": "模板配置",
+    "name": "模板名称",
+    "status": "状态",
+    "listTitle": "模板列表"
+  }
+}

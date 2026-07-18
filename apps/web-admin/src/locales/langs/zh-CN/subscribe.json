@@ -1,0 +1,24 @@
+{
+  "title": "订阅管理",
+  "config": {
+    "title": "订阅配置",
+    "list": "配置列表",
+    "name": "名称",
+    "price": "价格",
+    "time": "有效时间",
+    "product_id": "产品ID"
+  },
+  "list": {
+    "title": "订阅信息",
+    "listTitle": "订阅列表",
+    "orderNo": "订单编号",
+    "userId": "用户ID",
+    "membershipPlan": "会员套餐",
+    "paymentAmount": "支付金额",
+    "startTime": "开通时间",
+    "endTime": "到期时间",
+    "status": "状态",
+    "statusTrue": "已付款",
+    "statusFalse": "未付款"
+  }
+}

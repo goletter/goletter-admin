@@ -1,0 +1,54 @@
+{
+  "title": "动作库管理",
+  "classification": {
+    "title": "分类管理",
+    "listTitle": "分类列表",
+    "classname": "分类名称",
+    "biref": "分类"
+  },
+  "type": {
+    "title": "类型管理",
+    "listTitle": "类型列表",
+    "typeName": "类型名称",
+    "biref": "类型"
+  },
+  "attribute": {
+    "title": "属性管理",
+    "listTitle": "属性列表",
+    "typeName": "属性名称",
+    "tags": "关联标签",
+    "biref": "属性",
+    "rule": "规则",
+    "tag": "添加标签",
+    "mul": "多选",
+    "so": "单选"
+  },
+  "action": {
+    "title": "动作管理",
+    "listTitle": "动作列表",
+    "biref": "动作",
+    "actionname": "动作名称",
+    "cover_image": "动作封面图",
+    "category": "动作分类",
+    "action_type": "动作类型",
+    "status": "上架状态",
+    "views": "观看次数",
+    "time": "视频时长"
+  },
+  "edit": {
+    "title": "动作详情",
+    "actionName": "动作名称",
+    "actionTitle": "动作标题",
+    "actionDescription": "动作描述",
+    "category": "所属分类",
+    "type": "所属类型",
+    "viewRule": "观看规则",
+    "nd": "动作难度",
+    "coverImage": "动作封面图",
+    "uploadAction": "上传动作",
+    "uploadVideoZh": "上传视频（中文）",
+    "uploadVideoEn": "上传视频（英文）",
+    "attributes": "动作属性",
+    "tags": "关联标签"
+  }
+}

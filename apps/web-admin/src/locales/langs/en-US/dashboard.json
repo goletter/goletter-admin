@@ -1,0 +1,27 @@
+{
+  "analytics": {
+    "totalLoanContracts": "Total number of loan contracts",
+    "totalLoanAmount": "Total loan amount",
+    "totalRepaymentAmount": "Total repayment amount",
+    "totalNumberEquipment": "Total number of equipment",
+    "totalNumberVehicles": "Total number of vehicles",
+    "lendersOfNumber": "Number of lenders",
+    "itemsToBeProcessed": "Items to be processed",
+    "outstandingFeesRecord": "Repayment record for outstanding fees",
+    "overdueLoansRecord": "Overdue repayment record",
+    "expiredSimCard": "Expired SIM card",
+    "loanAmountStatistics": "Loan amount statistics",
+    "repaymentAmountStatistics": "Repayment amount statistics",
+    "deviceQuantityStatistics": "Device quantity statistics",
+    "weekly": "This week",
+    "monthly": "This month",
+    "weeklyTotalLoan": "Total loan amount this week",
+    "weeklyTotalDevice": "Total number of devices this week",
+    "weeklyTotalRepayment": "Total repayment this week",
+    "monthlyTotalLoan": "Total loan this month",
+    "monthlyTotalRepayment": "Total repayment this month",
+    "monthlyTotalDevice": "Total number of devices this month",
+    "comparedLastWeek": "Compared to last week",
+    "comparedLastMonth": "Compared to last month"
+  }
+}

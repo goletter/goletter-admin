@@ -1,0 +1,11 @@
+{
+  "title": "用户管理",
+  "user": {
+    "list": "用户列表",
+    "title": "用户信息",
+    "id": "用户ID",
+    "email": "邮箱",
+    "status": "状态",
+    "createdTime": "注册时间"
+  }
+}

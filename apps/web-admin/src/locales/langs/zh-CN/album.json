@@ -1,0 +1,19 @@
+{
+  "title": "课程专辑管理",
+  "class": {
+    "title": "专辑分类",
+    "className": "分类名称",
+    "cover": "分类封面图",
+    "description": "专辑描述"
+  },
+  "course": {
+    "title": "课程专辑",
+    "courseTitle": "专辑标题",
+    "cover": "专辑封面图",
+    "videoNum": "视频数量",
+    "status": "上架状态",
+    "listTitle": "课程列表",
+    "actionTitle": "选择动作",
+    "action": "动作"
+  }
+}

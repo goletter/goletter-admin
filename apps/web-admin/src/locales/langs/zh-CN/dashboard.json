@@ -1,0 +1,27 @@
+{
+  "analytics": {
+    "totalLoanContracts": "贷款合约总数",
+    "totalLoanAmount": "贷款金额总额",
+    "totalRepaymentAmount": "还款总额",
+    "totalNumberEquipment": "设备总数",
+    "totalNumberVehicles": "车辆总数",
+    "lendersOfNumber": "贷款人数量",
+    "itemsToBeProcessed": "待处理事项",
+    "outstandingFeesRecord": "待缴费还款记录",
+    "overdueLoansRecord": "已逾期还款记录",
+    "expiredSimCard": "已到期SIM卡",
+    "loanAmountStatistics": "贷款金额统计",
+    "repaymentAmountStatistics": "还款金额统计",
+    "deviceQuantityStatistics": "设备数量统计",
+    "weekly": "本周",
+    "monthly": "本月",
+    "weeklyTotalLoan": "本周贷款总额",
+    "weeklyTotalDevice": "本周设备总数",
+    "weeklyTotalRepayment": "本周还款总额",
+    "monthlyTotalLoan": "本月贷款总额",
+    "monthlyTotalRepayment": "本月还款总额",
+    "monthlyTotalDevice": "本月设备总数",
+    "comparedLastWeek": "同比上周",
+    "comparedLastMonth": "同比上月"
+  }
+}

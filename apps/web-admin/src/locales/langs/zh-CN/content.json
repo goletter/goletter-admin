@@ -1,0 +1,19 @@
+{
+  "title": "内容管理",
+  "banner": {
+    "title": "Banner管理",
+    "listTitle": "Banner列表",
+    "bannerImg": "Banner图片",
+    "bannerTitle": "图片标题",
+    "sort": "排序"
+  },
+  "user": {
+    "title": "用户协议",
+    "btn": "保存",
+    "toast1": "协议已更新",
+    "toast2": "更新失败"
+  },
+  "privacy": {
+    "title": "隐私协议"
+  }
+}

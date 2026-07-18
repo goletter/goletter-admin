@@ -1,0 +1,17 @@
+{
+  "auth": {
+    "login": "ចូលប្រើ",
+    "register": "ចុះឈ្មោះ",
+    "codeLogin": "ចូលដោយលេខកូដ",
+    "qrcodeLogin": "ចូលដោយកូដ QR",
+    "forgetPassword": "ភ្លេចពាក្យសម្ងាត់"
+  },
+  "dashboard": {
+    "title": "ទិដ្ឋភាពសរុប",
+    "analytics": "ទំព័រវិភាគ",
+    "workspace": "តុធ្វើការ"
+  },
+  "common": {
+    "index": "លិបិក្រម"
+  }
+}
