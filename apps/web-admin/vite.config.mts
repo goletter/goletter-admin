@@ -5,27 +5,32 @@ export default defineConfig(async (config) => {
   const command = config?.command ?? 'serve';
   const mode = config?.mode ?? 'development';
   const env = loadEnv(mode, process.cwd(), '');
+  const isDesktopDev = mode === 'desktop-dev';
   const apiTarget =
-    process.env.ELECTRON_API_TARGET ?? env.VITE_DESKTOP_API_TARGET;
-  const serverProxy = apiTarget
-    ? {
-        '/api': {
-          changeOrigin: true,
-          rewrite: (path: string) => path.replace(/^\/api/, ''),
-          // mock代理目标地址
-          // target: 'http://localhost:5320/api',
-          // 本地有后端时优先用 localhost，远程代理会明显拖慢首屏接口
-          target: apiTarget,
-          ws: true,
-        },
-      }
-    : undefined;
+    process.env.ELECTRON_API_TARGET ??
+    (isDesktopDev ? env.VITE_DESKTOP_API_TARGET : env.VITE_DEV_API_TARGET);
 
-  if (command === 'serve' && !apiTarget) {
+  if (command === 'serve' && isDesktopDev && !apiTarget) {
     throw new Error(
       `Missing VITE_DESKTOP_API_TARGET in apps/web-admin/.env.${mode}`,
     );
   }
+
+  const server = command === 'serve' && apiTarget
+    ? {
+        proxy: {
+          '/api': {
+            changeOrigin: true,
+            rewrite: (path: string) => path.replace(/^\/api/, ''),
+            // mock代理目标地址
+            // target: 'http://localhost:5320/api',
+            // 本地有后端时优先用 localhost，远程代理会明显拖慢首屏接口
+            target: apiTarget,
+            ws: true,
+          },
+        },
+      }
+    : undefined;
 
   return {
     application: {
@@ -46,7 +51,7 @@ export default defineConfig(async (config) => {
           'vue-router',
         ],
       },
-      server: serverProxy ? { proxy: serverProxy } : undefined,
+      server,
     },
   };
 });
