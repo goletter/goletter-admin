@@ -256,12 +256,12 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
       [data-desktop-tab-panels] {
         bottom: 0 !important;
         box-sizing: border-box !important;
-        height: calc(100vh - 56px) !important;
+        height: calc(100vh - 48px) !important;
         left: 0 !important;
         overflow: hidden !important;
         position: fixed !important;
         right: 0 !important;
-        top: 56px !important;
+        top: 48px !important;
         width: 100vw !important;
         z-index: 1 !important;
       }
@@ -288,9 +288,9 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         box-sizing: border-box;
         display: flex;
         gap: 2px;
-        height: 56px;
+        height: 48px;
         left: 0;
-        padding: 18px 12px 0 86px;
+        padding: 14px 12px 0 86px;
         position: fixed;
         right: 0;
         top: 0;
@@ -305,7 +305,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         display: flex;
         flex: 1 1 auto;
         gap: 2px;
-        height: 37px;
+        height: 34px;
         min-width: 0;
         overflow-x: auto;
         overflow-y: hidden;
@@ -368,7 +368,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         flex: 1 1 220px;
         gap: 9px;
         font: 13px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        height: 37px;
+        height: 34px;
         max-width: 260px;
         min-width: 76px;
         padding: 0 34px 0 13px;
@@ -434,7 +434,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         font-size: 18px;
         position: absolute;
         right: 9px;
-        top: 9px;
+        top: 8px;
         width: 18px;
       }
 
@@ -452,14 +452,14 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         color: #202124 !important;
         cursor: pointer !important;
         display: inline-flex !important;
-        flex: 0 0 34px !important;
-        height: 34px !important;
+        flex: 0 0 32px !important;
+        height: 32px !important;
         justify-content: center !important;
         margin: 0 10px 0 4px !important;
         padding: 0 !important;
         pointer-events: auto !important;
         position: static !important;
-        width: 34px !important;
+        width: 32px !important;
         z-index: 2147483647 !important;
       }
 
@@ -512,12 +512,12 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         panels.dataset.desktopTabPanels = 'true';
         panels.style.cssText = [
           'bottom: 0',
-          'height: calc(100vh - 56px)',
+          'height: calc(100vh - 48px)',
           'left: 0',
           'overflow: hidden',
           'position: fixed',
           'right: 0',
-          'top: 56px',
+          'top: 48px',
           'width: 100vw',
           'z-index: 1',
         ].join(';');
@@ -526,7 +526,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
 
         function layoutPanels() {
           const width = Math.max(window.innerWidth, 1);
-          const height = Math.max(window.innerHeight - 56, 1);
+          const height = Math.max(window.innerHeight - 48, 1);
 
           Object.assign(panels.style, {
             bottom: '0px',
@@ -535,7 +535,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
             overflow: 'hidden',
             position: 'fixed',
             right: '0px',
-            top: '56px',
+            top: '48px',
             width: width + 'px',
             zIndex: '1',
           });

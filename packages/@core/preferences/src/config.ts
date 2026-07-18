@@ -95,7 +95,7 @@ const defaultPreferences: Preferences = {
   tabbar: {
     draggable: true,
     enable: true,
-    height: 38,
+    height: 32,
     keepAlive: true,
     maxCount: 0,
     middleClickToClose: false,

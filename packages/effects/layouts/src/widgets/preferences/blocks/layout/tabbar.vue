@@ -22,7 +22,6 @@ const tabbarDraggable = defineModel<boolean>('tabbarDraggable');
 const tabbarWheelable = defineModel<boolean>('tabbarWheelable');
 const tabbarStyleType = defineModel<string>('tabbarStyleType');
 const tabbarShowMore = defineModel<boolean>('tabbarShowMore');
-const tabbarShowMaximize = defineModel<boolean>('tabbarShowMaximize');
 const tabbarMaxCount = defineModel<number>('tabbarMaxCount');
 const tabbarMiddleClickToClose = defineModel<boolean>(
   'tabbarMiddleClickToClose',
@@ -84,9 +83,6 @@ const styleItems = computed((): SelectOption[] => [
   </SwitchItem>
   <SwitchItem v-model="tabbarShowMore" :disabled="!tabbarEnable">
     {{ $t('preferences.tabbar.showMore') }}
-  </SwitchItem>
-  <SwitchItem v-model="tabbarShowMaximize" :disabled="!tabbarEnable">
-    {{ $t('preferences.tabbar.showMaximize') }}
   </SwitchItem>
   <SelectItem v-model="tabbarStyleType" :items="styleItems">
     {{ $t('preferences.tabbar.styleType.title') }}
