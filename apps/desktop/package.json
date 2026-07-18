@@ -12,8 +12,8 @@
     "build:main": "vite build",
     "build:web": "pnpm run build:deps && pnpm -F @vben/web-admin exec vite build --mode desktop",
     "dev": "concurrently -k -n WEB,ELECTRON -c cyan,green \"pnpm:dev:web\" \"pnpm:dev:electron\"",
-    "dev:electron": "wait-on http://127.0.0.1:5173/admin && pnpm run build:main && cross-env ELECTRON_DEV_SERVER_URL=http://127.0.0.1:5173/admin electron .",
-    "dev:web": "pnpm -F @vben/web-admin exec vite --mode development --host 127.0.0.1",
+    "dev:electron": "wait-on http://127.0.0.1:5174/admin && pnpm run build:main && cross-env ELECTRON_DEV_SERVER_URL=http://127.0.0.1:5174/admin electron .",
+    "dev:web": "pnpm -F @vben/web-admin exec vite --mode desktop-dev --host 127.0.0.1 --port 5174 --strictPort",
     "dist": "pnpm run build:main && pnpm run build:web && cross-env ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ electron-builder",
     "pack": "pnpm run build:main && pnpm run build:web && cross-env ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ electron-builder --dir",
     "typecheck": "tsc --noEmit -p tsconfig.json"

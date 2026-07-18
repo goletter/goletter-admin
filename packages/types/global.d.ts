@@ -8,6 +8,7 @@ declare module 'vue-router' {
 }
 
 export interface VbenAdminProAppConfigRaw {
+  VITE_DESKTOP_API_TARGET?: string;
   VITE_GLOB_API_URL: string;
 }
 

@@ -12,11 +12,12 @@ import { createServer } from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+declare const __DESKTOP_API_TARGET__: string;
+
 const dirname = path.dirname(fileURLToPath(import.meta.url));
-const desktopApiTarget =
-  process.env.ELECTRON_API_TARGET ?? 'https://floletic.test.geekdance.cn/api';
+const desktopApiTarget = process.env.ELECTRON_API_TARGET ?? __DESKTOP_API_TARGET__;
 const devServerUrl =
-  process.env.ELECTRON_DEV_SERVER_URL ?? 'http://127.0.0.1:5173/admin';
+  process.env.ELECTRON_DEV_SERVER_URL ?? 'http://127.0.0.1:5174/admin';
 const gotSingleInstanceLock = app.requestSingleInstanceLock();
 let desktopServerUrl: string | undefined;
 
@@ -221,6 +222,10 @@ function isInternalAppUrl(url: string) {
 
 function injectDesktopNewWindowButton(win: BrowserWindow) {
   win.webContents.on('did-finish-load', () => {
+    const tabLogoUrl = app.isPackaged
+      ? './static/images/logo.png'
+      : '/static/images/logo.png';
+
     void win.webContents.insertCSS(`
       html,
       body {
@@ -293,6 +298,24 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         z-index: 2147483647;
       }
 
+      [data-desktop-tabs-strip] {
+        -webkit-app-region: no-drag;
+        -ms-overflow-style: none;
+        align-items: end;
+        display: flex;
+        flex: 1 1 auto;
+        gap: 2px;
+        height: 37px;
+        min-width: 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+      }
+
+      [data-desktop-tabs-strip]::-webkit-scrollbar {
+        display: none;
+      }
+
       [data-desktop-browser-tab] {
         -webkit-app-region: no-drag;
         align-items: center;
@@ -301,11 +324,12 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         box-sizing: border-box;
         color: #202124;
         display: inline-flex;
+        flex: 1 1 220px;
         gap: 9px;
         font: 13px/1.2 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         height: 37px;
         max-width: 260px;
-        min-width: 220px;
+        min-width: 76px;
         padding: 0 34px 0 13px;
         position: relative;
       }
@@ -427,6 +451,9 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         const bar = document.createElement('div');
         bar.dataset.desktopBrowserBar = 'true';
 
+        const tabsStrip = document.createElement('div');
+        tabsStrip.dataset.desktopTabsStrip = 'true';
+
         const panels = document.createElement('div');
         panels.dataset.desktopTabPanels = 'true';
         panels.style.cssText = [
@@ -505,6 +532,151 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
           titleElement.textContent = getPanelTitle(panel, fallbackTitle);
         }
 
+        function getAccessStoreSnapshot() {
+          const snapshot = {};
+          for (let index = 0; index < localStorage.length; index += 1) {
+            const key = localStorage.key(index);
+            if (key && key.includes('core-access')) {
+              snapshot[key] = localStorage.getItem(key);
+            }
+          }
+          return JSON.stringify(snapshot);
+        }
+
+        function getAccessTokenSnapshot() {
+          for (let index = 0; index < localStorage.length; index += 1) {
+            const key = localStorage.key(index);
+            if (!key || !key.includes('core-access')) {
+              continue;
+            }
+
+            try {
+              const value = localStorage.getItem(key);
+              const state = value ? JSON.parse(value) : null;
+              if (state?.accessToken) {
+                return String(state.accessToken);
+              }
+            } catch {
+              // Ignore unrelated or malformed storage entries.
+            }
+          }
+          return '';
+        }
+
+        function getActivePanel() {
+          const activeTab = bar.querySelector('[data-desktop-browser-tab][data-active="true"]');
+          const panelId = activeTab?.getAttribute('data-panel-id');
+          const panel = panelId && document.querySelector(
+            '[data-desktop-tab-panel="' + panelId + '"]',
+          );
+          return panel instanceof HTMLElement ? panel : null;
+        }
+
+        function closeOtherTabs(sourcePanel) {
+          const keepPanel = sourcePanel || getActivePanel();
+          if (!(keepPanel instanceof HTMLElement)) {
+            return;
+          }
+
+          for (const tab of bar.querySelectorAll('[data-desktop-browser-tab]')) {
+            const panelId = tab.getAttribute('data-panel-id');
+            const panel = panelId && document.querySelector(
+              '[data-desktop-tab-panel="' + panelId + '"]',
+            );
+            if (panel === keepPanel) {
+              continue;
+            }
+
+            tab.remove();
+            if (panel instanceof HTMLElement) {
+              panel.remove();
+            }
+          }
+
+          const keepTab = bar.querySelector(
+            '[data-panel-id="' + keepPanel.dataset.desktopTabPanel + '"]',
+          );
+          if (keepTab instanceof HTMLElement) {
+            setActiveTab(keepTab);
+          }
+        }
+
+        function getPanelUrl(panel) {
+          try {
+            if (panel instanceof HTMLIFrameElement) {
+              return panel.contentWindow?.location.href || panel.src || '';
+            }
+
+            return window.location.href;
+          } catch {
+            return panel instanceof HTMLIFrameElement ? panel.src : window.location.href;
+          }
+        }
+
+        function isLoginPanel(panel) {
+          const url = getPanelUrl(panel);
+          return /(?:#|\\/)?\\/login(?:[/?#]|$)/.test(url);
+        }
+
+        function isRecentlyCreatedPanel(panel) {
+          const createdAt = Number(panel.dataset.desktopTabCreatedAt || 0);
+          return createdAt > 0 && Date.now() - createdAt < 5000;
+        }
+
+        function closeOtherTabsAfterLogout(sourcePanel) {
+          const panel = sourcePanel || getActivePanel();
+          if (!(panel instanceof HTMLElement)) {
+            return;
+          }
+
+          window.setTimeout(() => {
+            if (!isRecentlyCreatedPanel(panel) && isLoginPanel(panel)) {
+              closeOtherTabs(panel);
+            }
+          }, 350);
+        }
+
+        let accessStoreSnapshot = getAccessStoreSnapshot();
+        let accessTokenSnapshot = getAccessTokenSnapshot();
+        let isSyncingSharedAuth = false;
+
+        function checkSharedAuthState(sourcePanel) {
+          const previousAccessStore = accessStoreSnapshot;
+          const previousAccessToken = accessTokenSnapshot;
+          const nextAccessStore = getAccessStoreSnapshot();
+          const nextAccessToken = getAccessTokenSnapshot();
+          if (
+            nextAccessStore === previousAccessStore &&
+            nextAccessToken === previousAccessToken
+          ) {
+            return;
+          }
+
+          accessStoreSnapshot = nextAccessStore;
+          accessTokenSnapshot = nextAccessToken;
+          if (isSyncingSharedAuth) {
+            return;
+          }
+
+          const isPlainTokenLogout = Boolean(previousAccessToken && !nextAccessToken);
+          const isEncryptedStoreChanged = Boolean(previousAccessStore && nextAccessStore);
+          if (!isPlainTokenLogout && !isEncryptedStoreChanged) {
+            return;
+          }
+
+          isSyncingSharedAuth = true;
+          if (isPlainTokenLogout) {
+            closeOtherTabs(sourcePanel);
+          } else {
+            closeOtherTabsAfterLogout(sourcePanel);
+          }
+          window.setTimeout(() => {
+            accessStoreSnapshot = getAccessStoreSnapshot();
+            accessTokenSnapshot = getAccessTokenSnapshot();
+            isSyncingSharedAuth = false;
+          }, 1200);
+        }
+
         function setActiveTab(activeTab) {
           for (const item of bar.querySelectorAll('[data-desktop-browser-tab]')) {
             const isActive = item === activeTab;
@@ -522,6 +694,11 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
               layoutPanels();
               if (isActive) {
                 updateTabTitle(item, panel);
+                item.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'nearest',
+                  inline: 'nearest',
+                });
               }
             }
           }
@@ -537,6 +714,13 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
           if (panel instanceof HTMLIFrameElement) {
             panel.addEventListener('load', () => {
               updateTitle();
+              try {
+                panel.contentWindow?.addEventListener('storage', () => {
+                  checkSharedAuthState(panel);
+                });
+              } catch {
+                // Same-origin storage events are best effort; polling below is the fallback.
+              }
               try {
                 const titleNode = panel.contentDocument?.querySelector('title');
                 if (titleNode) {
@@ -567,6 +751,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         function createTab(titleText, panel) {
           const panelId = 'desktop-tab-' + ++tabIndex;
           panel.dataset.desktopTabPanel = panelId;
+          panel.dataset.desktopTabCreatedAt = String(Date.now());
           panel.style.display = '';
           panel.style.pointerEvents = 'auto';
           panel.style.visibility = 'visible';
@@ -582,7 +767,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
           const icon = document.createElement('img');
           icon.dataset.desktopBrowserTabIcon = 'true';
           icon.alt = '';
-          icon.src = new URL('./static/images/logo.png', window.location.href).toString();
+          icon.src = new URL(${JSON.stringify(tabLogoUrl)}, window.location.href).toString();
 
           const title = document.createElement('span');
           title.dataset.desktopBrowserTabTitle = 'true';
@@ -647,7 +832,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
           panels.append(frame);
           layoutPanels();
 
-          bar.insertBefore(createTab('新标签页', frame), button);
+          tabsStrip.insertBefore(createTab('新标签页', frame), button);
         });
 
         const appPanel = document.querySelector('#app');
@@ -657,10 +842,17 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
 
         panels.append(appPanel);
         document.body.append(panels);
-        bar.append(createTab(document.title || 'Goletter Admin', appPanel), button);
+        tabsStrip.append(createTab(document.title || 'Goletter Admin', appPanel), button);
+        bar.append(tabsStrip);
         document.body.prepend(bar);
         layoutPanels();
         window.addEventListener('resize', layoutPanels);
+        window.addEventListener('storage', () => {
+          checkSharedAuthState(null);
+        });
+        window.setInterval(() => {
+          checkSharedAuthState(getActivePanel());
+        }, 1000);
       })();
     `);
   });

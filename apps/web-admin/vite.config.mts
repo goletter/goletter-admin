@@ -1,6 +1,18 @@
 import { defineConfig } from '@vben/vite-config';
+import { loadEnv } from 'vite';
 
-export default defineConfig(async () => {
+export default defineConfig(async (config) => {
+  const mode = config?.mode ?? 'development';
+  const env = loadEnv(mode, process.cwd(), '');
+  const apiTarget =
+    process.env.ELECTRON_API_TARGET ?? env.VITE_DESKTOP_API_TARGET;
+
+  if (!apiTarget) {
+    throw new Error(
+      `Missing VITE_DESKTOP_API_TARGET in apps/web-admin/.env.${mode}`,
+    );
+  }
+
   return {
     application: {
       // 开发环境不启 mock / PWA，减少冷启动开销
@@ -28,7 +40,7 @@ export default defineConfig(async () => {
             // mock代理目标地址
             // target: 'http://localhost:5320/api',
             // 本地有后端时优先用 localhost，远程代理会明显拖慢首屏接口
-            target: 'https://floletic.test.geekdance.cn/api',
+            target: apiTarget,
             ws: true,
           },
         },
