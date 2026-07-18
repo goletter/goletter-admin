@@ -14,13 +14,10 @@ export default defineConfig(async () => {
           'ant-design-vue',
           'ant-design-vue/es',
           '@vueuse/core',
-          'axios',
           'dayjs',
-          'echarts',
           'pinia',
           'vue',
           'vue-router',
-          'vue-i18n',
         ],
       },
       server: {
