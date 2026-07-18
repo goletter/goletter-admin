@@ -6,6 +6,7 @@ import { ref, watch } from 'vue';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 const props = defineProps<{
+  height?: string;
   seriesData: number[];
   xData: string[];
 }>();
@@ -13,7 +14,7 @@ const props = defineProps<{
 const chartRef = ref<EchartsUIType>();
 const { renderEcharts } = useEcharts(chartRef);
 watch(
-  () => [props.xData, props.seriesData],
+  () => [props.xData, props.seriesData] as const,
   ([newX, newY]) => {
     if (newX.length > 0 && newY.length > 0) {
       renderEcharts({
@@ -44,5 +45,5 @@ watch(
 </script>
 
 <template>
-  <EchartsUI height="400px" ref="chartRef" />
+  <EchartsUI :height="height ?? '400px'" ref="chartRef" />
 </template>

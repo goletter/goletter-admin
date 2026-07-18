@@ -6,6 +6,7 @@ import { ref, watch } from 'vue';
 import { EchartsUI, useEcharts } from '@vben/plugins/echarts';
 
 const props = defineProps<{
+  height?: string;
   seriesData: number[];
   xData: string[];
 }>();
@@ -79,5 +80,5 @@ watch(
 </script>
 
 <template>
-  <EchartsUI height="600px" ref="chartRef" />
+  <EchartsUI :height="height ?? '600px'" ref="chartRef" />
 </template>

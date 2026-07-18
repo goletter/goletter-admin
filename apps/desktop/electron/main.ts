@@ -245,12 +245,24 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         height: 100% !important;
         left: 0 !important;
         overflow-x: hidden !important;
-        overflow-y: auto !important;
+        overflow-y: hidden !important;
         position: absolute !important;
         right: 0 !important;
         top: 0 !important;
         transform: translateZ(0) !important;
         width: 100% !important;
+      }
+
+      #app .ant-app {
+        height: 100% !important;
+        overflow: hidden !important;
+      }
+
+      #__vben_main_content {
+        min-height: 0 !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        overscroll-behavior: contain !important;
       }
 
       [data-desktop-tab-panels] {
@@ -273,8 +285,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         display: block !important;
         height: 100% !important;
         left: 0 !important;
-        overflow-x: hidden !important;
-        overflow-y: auto !important;
+        overflow: hidden !important;
         position: absolute !important;
         right: 0 !important;
         top: 0 !important;
@@ -549,8 +560,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
               bottom: '0px',
               height: height + 'px',
               left: '0px',
-              overflowX: 'hidden',
-              overflowY: 'auto',
+              overflow: 'hidden',
               position: 'absolute',
               right: '0px',
               top: '0px',
