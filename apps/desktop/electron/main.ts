@@ -316,6 +316,47 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         display: none;
       }
 
+      [data-desktop-tab-menu] {
+        -webkit-app-region: no-drag;
+        background: rgba(248, 249, 250, 0.98);
+        border: 1px solid rgba(60, 64, 67, 0.18);
+        border-radius: 8px;
+        box-shadow: 0 8px 24px rgba(60, 64, 67, 0.24);
+        box-sizing: border-box;
+        color: #202124;
+        font: 13px/1.4 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        min-width: 218px;
+        padding: 6px 0;
+        position: fixed;
+        user-select: none;
+        z-index: 2147483647;
+      }
+
+      [data-desktop-tab-menu-item] {
+        align-items: center;
+        box-sizing: border-box;
+        cursor: default;
+        display: flex;
+        min-height: 30px;
+        padding: 5px 16px;
+        white-space: nowrap;
+      }
+
+      [data-desktop-tab-menu-item]:hover {
+        background: rgba(60, 64, 67, 0.08);
+      }
+
+      [data-desktop-tab-menu-item][data-disabled="true"] {
+        color: #9aa0a6;
+        pointer-events: none;
+      }
+
+      [data-desktop-tab-menu-separator] {
+        background: rgba(60, 64, 67, 0.16);
+        height: 1px;
+        margin: 5px 0;
+      }
+
       [data-desktop-browser-tab] {
         -webkit-app-region: no-drag;
         align-items: center;
@@ -453,6 +494,19 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
 
         const tabsStrip = document.createElement('div');
         tabsStrip.dataset.desktopTabsStrip = 'true';
+        bar.addEventListener(
+          'contextmenu',
+          (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            const target = event.target;
+            const tab = target instanceof Element
+              ? target.closest('[data-desktop-browser-tab]')
+              : null;
+            showTabContextMenu(event, tab instanceof HTMLElement ? tab : null);
+          },
+          true,
+        );
 
         const panels = document.createElement('div');
         panels.dataset.desktopTabPanels = 'true';
@@ -599,6 +653,120 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
           if (keepTab instanceof HTMLElement) {
             setActiveTab(keepTab);
           }
+        }
+
+        function getAllTabs() {
+          return [...bar.querySelectorAll('[data-desktop-browser-tab]')].filter(
+            (tab) => tab instanceof HTMLElement,
+          );
+        }
+
+        function getTabPanel(tab) {
+          const panelId = tab.getAttribute('data-panel-id');
+          const panel = panelId && document.querySelector(
+            '[data-desktop-tab-panel="' + panelId + '"]',
+          );
+          return panel instanceof HTMLElement ? panel : null;
+        }
+
+        function closeTab(tab) {
+          const tabs = getAllTabs();
+          if (!(tab instanceof HTMLElement) || tabs.length <= 1) {
+            return;
+          }
+
+          const index = tabs.indexOf(tab);
+          const nextTab = tabs[index - 1] || tabs[index + 1] || null;
+          const panel = getTabPanel(tab);
+          const wasActive = tab.dataset.active === 'true';
+          tab.remove();
+          panel?.remove();
+
+          if (wasActive && nextTab instanceof HTMLElement) {
+            setActiveTab(nextTab);
+          }
+        }
+
+        function closeTabs(tabsToClose) {
+          for (const tab of tabsToClose) {
+            closeTab(tab);
+          }
+        }
+
+        function reloadTab(tab) {
+          const panel = tab ? getTabPanel(tab) : getActivePanel();
+          if (panel instanceof HTMLIFrameElement) {
+            panel.contentWindow?.location.reload();
+            return;
+          }
+
+          window.location.reload();
+        }
+
+        function hideTabContextMenu() {
+          document.querySelector('[data-desktop-tab-menu]')?.remove();
+        }
+
+        function appendTabMenuItem(menu, label, action, disabled) {
+          const item = document.createElement('div');
+          item.dataset.desktopTabMenuItem = 'true';
+          item.dataset.disabled = String(Boolean(disabled));
+          item.textContent = label;
+          item.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            if (disabled) {
+              return;
+            }
+            hideTabContextMenu();
+            action();
+          });
+          menu.append(item);
+        }
+
+        function appendTabMenuSeparator(menu) {
+          const separator = document.createElement('div');
+          separator.dataset.desktopTabMenuSeparator = 'true';
+          menu.append(separator);
+        }
+
+        function showTabContextMenu(event, tab) {
+          hideTabContextMenu();
+
+          const tabs = getAllTabs();
+          const tabIndex = tab instanceof HTMLElement ? tabs.indexOf(tab) : -1;
+          const rightTabs = tabIndex >= 0 ? tabs.slice(tabIndex + 1) : [];
+          const panel = tab instanceof HTMLElement ? getTabPanel(tab) : null;
+          const menu = document.createElement('div');
+          menu.dataset.desktopTabMenu = 'true';
+
+          appendTabMenuItem(menu, '打开新的标签页', () => button.click(), false);
+          appendTabMenuItem(menu, '重新加载标签页', () => reloadTab(tab), !tab);
+          appendTabMenuSeparator(menu);
+          appendTabMenuItem(menu, '关闭标签页', () => closeTab(tab), !tab || tabs.length <= 1);
+          appendTabMenuItem(
+            menu,
+            '关闭其他标签页',
+            () => {
+              if (panel instanceof HTMLElement) {
+                closeOtherTabs(panel);
+              }
+            },
+            !tab || tabs.length <= 1,
+          );
+          appendTabMenuItem(
+            menu,
+            '关闭右侧标签页',
+            () => closeTabs(rightTabs),
+            rightTabs.length === 0,
+          );
+
+          document.body.append(menu);
+          const menuRect = menu.getBoundingClientRect();
+          const left = Math.min(event.clientX, window.innerWidth - menuRect.width - 8);
+          const top = Math.min(event.clientY, window.innerHeight - menuRect.height - 8);
+          menu.style.left = Math.max(8, left) + 'px';
+          menu.style.top = Math.max(8, top) + 'px';
         }
 
         function getPanelUrl(panel) {
@@ -779,20 +947,7 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
           close.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
-            if (bar.querySelectorAll('[data-desktop-browser-tab]').length <= 1) {
-              return;
-            }
-
-            const nextTab =
-              tab.previousElementSibling?.matches('[data-desktop-browser-tab]') &&
-              tab.previousElementSibling ||
-              tab.nextElementSibling?.matches('[data-desktop-browser-tab]') &&
-              tab.nextElementSibling;
-            tab.remove();
-            panel.remove();
-            if (nextTab instanceof HTMLElement) {
-              setActiveTab(nextTab);
-            }
+            closeTab(tab);
           });
 
           tab.addEventListener('click', () => {
@@ -847,6 +1002,14 @@ function injectDesktopNewWindowButton(win: BrowserWindow) {
         document.body.prepend(bar);
         layoutPanels();
         window.addEventListener('resize', layoutPanels);
+        window.addEventListener('resize', hideTabContextMenu);
+        window.addEventListener('blur', hideTabContextMenu);
+        document.addEventListener('click', hideTabContextMenu, true);
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape') {
+            hideTabContextMenu();
+          }
+        });
         window.addEventListener('storage', () => {
           checkSharedAuthState(null);
         });
