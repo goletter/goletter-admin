@@ -11,6 +11,11 @@ interface OpenWindowOptions {
  * @param options - 打开窗口的选项。
  */
 function openWindow(url: string, options: OpenWindowOptions = {}): void {
+  if (window.desktop?.openWindow) {
+    void window.desktop.openWindow(url);
+    return;
+  }
+
   // 解构并设置默认值
   const { noopener = true, noreferrer = true, target = '_blank' } = options;
 

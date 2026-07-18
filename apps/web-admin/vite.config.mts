@@ -28,7 +28,7 @@ export default defineConfig(async () => {
             // mock代理目标地址
             // target: 'http://localhost:5320/api',
             // 本地有后端时优先用 localhost，远程代理会明显拖慢首屏接口
-            target: 'https://www.floletics.com/api',
+            target: 'https://floletic.test.geekdance.cn/api',
             ws: true,
           },
         },

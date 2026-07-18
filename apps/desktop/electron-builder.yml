@@ -1,0 +1,26 @@
+appId: cn.goletter.admin
+productName: Goletter Admin
+asar: true
+npmRebuild: false
+directories:
+  output: release
+files:
+  - dist-electron/**
+  - package.json
+extraResources:
+  - from: ../web-admin/dist
+    to: web
+mac:
+  icon: build/icons/icon.icns
+  category: public.app-category.business
+  target:
+    - dmg
+win:
+  icon: build/icons/icon.ico
+  target:
+    - nsis
+linux:
+  icon: build/icons/icon.png
+  category: Office
+  target:
+    - AppImage

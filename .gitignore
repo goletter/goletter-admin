@@ -18,6 +18,8 @@ coverage
 .temp
 .pnpm-store
 dev-dist
+apps/desktop/dist-electron
+apps/desktop/release
 .stylelintcache
 yarn.lock
 package-lock.json

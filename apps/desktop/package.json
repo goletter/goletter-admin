@@ -1,0 +1,31 @@
+{
+  "name": "@vben/desktop",
+  "version": "1.0.0",
+  "description": "Desktop wrapper for Goletter Admin.",
+  "author": "Goletter",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "build:deps": "pnpm turbo build --filter='@vben/web-admin...'",
+    "build:main": "vite build",
+    "build:web": "pnpm run build:deps && pnpm -F @vben/web-admin exec vite build --mode desktop",
+    "dev": "concurrently -k -n WEB,ELECTRON -c cyan,green \"pnpm:dev:web\" \"pnpm:dev:electron\"",
+    "dev:electron": "wait-on http://127.0.0.1:5173/admin && pnpm run build:main && cross-env ELECTRON_DEV_SERVER_URL=http://127.0.0.1:5173/admin electron .",
+    "dev:web": "pnpm -F @vben/web-admin exec vite --mode development --host 127.0.0.1",
+    "dist": "pnpm run build:main && pnpm run build:web && cross-env ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ electron-builder",
+    "pack": "pnpm run build:main && pnpm run build:web && cross-env ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ electron-builder --dir",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "concurrently": "^9.1.2",
+    "cross-env": "catalog:",
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "wait-on": "^8.0.3"
+  }
+}
