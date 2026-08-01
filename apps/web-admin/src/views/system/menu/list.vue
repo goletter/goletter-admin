@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { onMounted } from 'vue';
-
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon, Plus } from '@vben/icons';
 import { $t } from '@vben/locales';
@@ -55,31 +53,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       transform: false,
       expandAll: true,
     },
-  } as VxeTableGridOptions,
+  } as VxeTableGridOptions<SystemMenuApi.SystemMenu>,
 });
-
-// function onActionClick({
-//   code,
-//   row,
-// }: OnActionClickParams<SystemMenuApi.SystemMenu>) {
-//   switch (code) {
-//     case 'append': {
-//       onAppend(row);
-//       break;
-//     }
-//     case 'delete': {
-//       onDelete(row);
-//       break;
-//     }
-//     case 'edit': {
-//       onEdit(row);
-//       break;
-//     }
-//     default: {
-//       break;
-//     }
-//   }
-// }
 
 function onRefresh() {
   gridApi.query();
@@ -112,10 +87,6 @@ function onDelete(row: SystemMenuApi.SystemMenu) {
       hideLoading();
     });
 }
-
-onMounted(() => {
-  gridApi.reload();
-});
 </script>
 <template>
   <Page auto-content-height>

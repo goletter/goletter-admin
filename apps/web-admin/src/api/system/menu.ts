@@ -103,7 +103,7 @@ export namespace SystemMenuApi {
  */
 async function getMenuList() {
   const res = await requestClient.get('/admin/permissions');
-  return res.data;
+  return res;
 }
 
 async function isMenuNameExists(

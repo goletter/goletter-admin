@@ -63,14 +63,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: `${$t('common.pleaseEnter')}${$t('system.user.userName')}`,
       },
     },
-    {
-      component: 'Input',
-      fieldName: 'roleName',
-      label: $t('system.user.roleName'),
-      componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('system.user.roleName')}`,
-      },
-    },
   ];
 }
 
