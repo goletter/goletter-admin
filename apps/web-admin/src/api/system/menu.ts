@@ -90,6 +90,71 @@ export namespace SystemMenuApi {
   }
 }
 
+function getMenuItems(response: any): SystemMenuApi.SystemMenu[] {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  if (Array.isArray(response?.data)) {
+    return response.data;
+  }
+
+  if (Array.isArray(response?.data?.data)) {
+    return response.data.data;
+  }
+
+  return [];
+}
+
+function getMenuTotal(response: any, data: SystemMenuApi.SystemMenu[]) {
+  return (
+    response?.total ??
+    response?.data?.total ??
+    response?.meta?.total ??
+    response?.data?.meta?.total ??
+    data.length
+  );
+}
+
+function toMenuTree(data: SystemMenuApi.SystemMenu[]) {
+  const hasChildren = data.some((item) => item.children?.length);
+  if (hasChildren) {
+    return data;
+  }
+
+  const hasParentField = data.some((item) => item.parent_id ?? item.pid);
+  if (!hasParentField) {
+    return data;
+  }
+
+  const menuMap = new Map<string, SystemMenuApi.SystemMenu>();
+  const roots: SystemMenuApi.SystemMenu[] = [];
+
+  data.forEach((item) => {
+    menuMap.set(String(item.id), { ...item, children: [] });
+  });
+
+  menuMap.forEach((item) => {
+    const parentId = item.parent_id ?? item.pid;
+
+    if (
+      parentId === undefined ||
+      parentId === null ||
+      parentId === '' ||
+      parentId === 0 ||
+      parentId === '0' ||
+      !menuMap.has(String(parentId))
+    ) {
+      roots.push(item);
+      return;
+    }
+
+    menuMap.get(String(parentId))?.children?.push(item);
+  });
+
+  return roots;
+}
+
 /**
  * 获取菜单数据列表
  */
@@ -101,9 +166,17 @@ export namespace SystemMenuApi {
 /**
  * 获取菜单权限树-从后端API
  */
-async function getMenuList() {
-  const res = await requestClient.get('/admin/permissions');
-  return res;
+async function getMenuList(params?: Recordable<any>) {
+  const response = await requestClient.get<any>('/admin/permissions', {
+    params,
+  });
+  const data = toMenuTree(getMenuItems(response));
+
+  return {
+    ...(Array.isArray(response) ? {} : response),
+    data,
+    total: getMenuTotal(response, data),
+  };
 }
 
 async function isMenuNameExists(

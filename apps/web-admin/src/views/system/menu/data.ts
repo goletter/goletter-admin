@@ -1,7 +1,8 @@
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
 import { $t } from '#/locales';
+
 /* eslint-disable no-unused-vars */
 export enum SysMenuType {
   Button = 2,
@@ -28,24 +29,11 @@ export function getMenuTypeOptions() {
       value: SysMenuType.Button,
     },
   ];
-  // return [
-  //   {
-  //     color: 'processing',
-  //     label: $t('system.menu.typeCatalog'),
-  //     value: 'catalog',
-  //   },
-  //   { color: 'default', label: $t('system.menu.typeMenu'), value: 'menu' },
-  //   { color: 'error', label: $t('system.menu.typeButton'), value: 'button' },
-  //   {
-  //     color: 'success',
-  //     label: $t('system.menu.typeEmbedded'),
-  //     value: 'embedded',
-  //   },
-  //   { color: 'warning', label: $t('system.menu.typeLink'), value: 'link' },
-  // ];
 }
 
-export function useColumns(): VxeTableGridOptions<SystemMenuApi.SystemMenu>['columns'] {
+export function useColumns<T = SystemMenuApi.SystemMenu>(
+  onActionClick: OnActionClickFn<T>,
+): VxeTableGridOptions['columns'] {
   return [
     {
       align: 'left',

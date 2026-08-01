@@ -1,5 +1,8 @@
 <script lang="ts" setup>
-import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type {
+  OnActionClickParams,
+  VxeTableGridOptions,
+} from '#/adapter/vxe-table';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon, Plus } from '@vben/icons';
@@ -20,9 +23,10 @@ const [FormDrawer, formDrawerApi] = useVbenDrawer({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
-    columns: useColumns(),
+    columns: useColumns(onActionClick),
     height: 'auto',
     keepSource: true,
+    size: 'large',
     pagerConfig: {
       enabled: false,
     },
@@ -32,8 +36,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
           const result = await getMenuList();
 
           return {
-            total: result.total,
             items: result.data,
+            total: result.total,
           };
         },
       },
@@ -55,6 +59,19 @@ const [Grid, gridApi] = useVbenVxeGrid({
     },
   } as VxeTableGridOptions<SystemMenuApi.SystemMenu>,
 });
+
+function onActionClick(e: OnActionClickParams<SystemMenuApi.SystemMenu>) {
+  switch (e.code) {
+    case 'delete': {
+      onDelete(e.row);
+      break;
+    }
+    case 'edit': {
+      onEdit(e.row);
+      break;
+    }
+  }
+}
 
 function onRefresh() {
   gridApi.query();

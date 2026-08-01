@@ -91,6 +91,11 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
             text: $t('common.edit'),
             show: hasAccessByCodes(['RoleUpdate']),
           },
+          // {
+          //   code: 'permission',
+          //   text: $t('common.setPermissions'),
+          //   // show: hasAccessByCodes(['20104']),
+          // },
           {
             code: 'delete',
             text: $t('common.delete'),
