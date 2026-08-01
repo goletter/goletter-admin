@@ -18,14 +18,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
         placeholder: `${$t('common.pleaseEnter')}${$t('user.user.id')}`,
       },
     },
-    {
-      component: 'Input',
-      fieldName: 'email',
-      label: $t('user.user.email'),
-      componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('user.user.email')}`,
-      },
-    },
   ];
 }
 
@@ -33,12 +25,6 @@ export function useColumns<T = SystemUserApi.SystemUser>(
   onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
   return [
-    {
-      type: 'seq',
-      title: $t('common.index'),
-      width: 60,
-      align: 'center',
-    },
     {
       field: 'id',
       title: $t('user.user.id'),

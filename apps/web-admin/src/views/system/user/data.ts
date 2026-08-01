@@ -72,12 +72,6 @@ export function useColumns<T = SystemUserApi.SystemUser>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
-      type: 'seq',
-      title: $t('common.index'),
-      width: 60,
-      align: 'center',
-    },
-    {
       field: 'realname',
       title: $t('system.user.userName'),
       minWidth: 100,
