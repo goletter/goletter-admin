@@ -1,3 +1,4 @@
+import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
@@ -27,6 +28,19 @@ export function getMenuTypeOptions() {
       color: 'error',
       label: $t('system.menu.typeButton'),
       value: SysMenuType.Button,
+    },
+  ];
+}
+
+export function useGridFormSchema(): VbenFormSchema[] {
+  return [
+    {
+      component: 'Input',
+      fieldName: 'name',
+      label: '菜单名称',
+      componentProps: {
+        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.roleName')}`,
+      },
     },
   ];
 }
@@ -98,12 +112,29 @@ export function useColumns<T = SystemMenuApi.SystemMenu>(
       width: 100,
     },
     {
-      field: 'action',
+      align: 'center',
+      cellRender: {
+        attrs: {
+          nameField: 'name',
+          nameTitle: $t('system.role.name'),
+          onClick: onActionClick,
+        },
+        name: 'CellOperation',
+        options: [
+          {
+            code: 'edit',
+            text: $t('common.edit'),
+          },
+          {
+            code: 'delete',
+            text: $t('common.delete'),
+          },
+        ],
+      },
+      field: 'operation',
       fixed: 'right',
-      width: 200,
-      showOverflow: false,
-      slots: { default: 'action' },
-      title: '操作',
+      title: $t('common.operation'),
+      minWidth: 130,
     },
   ];
 }
