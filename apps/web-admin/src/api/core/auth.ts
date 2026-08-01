@@ -48,5 +48,5 @@ export async function logoutApi() {
  * 获取用户权限码
  */
 export async function getPermissionApi() {
-  return requestClient.get<any>('/admin/permission/code');
+  return requestClient.get<any>('/admin/permissions/code');
 }
