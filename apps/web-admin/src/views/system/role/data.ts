@@ -12,19 +12,19 @@ export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
-      fieldName: 'name',
-      label: $t('system.role.roleName'),
+      fieldName: 'display_name',
+      label: $t('system.role.displayName'),
       componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.roleName')}`,
+        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.displayName')}`,
       },
       rules: 'required',
     },
     {
       component: 'Input',
-      fieldName: 'display_name',
-      label: $t('system.role.remark'),
+      fieldName: 'name',
+      label: $t('system.role.roleName'),
       componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.remark')}`,
+        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.roleName')}`,
       },
       rules: 'required',
     },
@@ -42,10 +42,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
-      fieldName: 'realname',
-      label: $t('system.role.roleName'),
+      fieldName: 'display_name',
+      label: $t('system.role.displayName'),
       componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.roleName')}`,
+        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.displayName')}`,
       },
     },
   ];
@@ -56,14 +56,14 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
 ): VxeTableGridOptions['columns'] {
   return [
     {
+      field: 'display_name',
+      minWidth: 100,
+      title: $t('system.role.displayName'),
+    },
+    {
       field: 'name',
       title: $t('system.role.roleName'),
       width: 200,
-    },
-    {
-      field: 'display_name',
-      minWidth: 100,
-      title: $t('system.role.remark'),
     },
     {
       field: 'created_at',

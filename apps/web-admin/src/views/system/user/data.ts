@@ -43,7 +43,7 @@ export function useFormSchema(): VbenFormSchema[] {
         allowClear: true,
         api: () => getRoleFullList().then((res) => res.data),
         class: 'w-full',
-        labelField: 'name',
+        labelField: 'display_name',
         valueField: 'id',
       },
       fieldName: 'role_id',
