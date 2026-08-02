@@ -31,7 +31,22 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       minWidth: 100,
     },
     {
-      field: 'email',
+      field: 'name',
+      title: $t('user.user.email'),
+      minWidth: 100,
+    },
+    {
+      field: 'phone',
+      title: $t('user.user.email'),
+      minWidth: 100,
+    },
+    {
+      field: 'father_height',
+      title: $t('user.user.email'),
+      minWidth: 100,
+    },
+    {
+      field: 'mother_height',
       title: $t('user.user.email'),
       minWidth: 100,
     },
@@ -46,6 +61,11 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       field: 'status',
       title: $t('common.status'),
       width: 100,
+    },
+    {
+      field: 'card_at',
+      title: $t('user.user.createdTime'),
+      minWidth: 100,
     },
     {
       field: 'created_at',
