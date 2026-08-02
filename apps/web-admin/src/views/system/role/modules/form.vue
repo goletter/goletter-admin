@@ -76,7 +76,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 async function loadPermissions() {
   loadingPermissions.value = true;
   try {
-    const res = await getMenuList();
+    const { data: res } = await getMenuList();
     permissions.value = res as unknown as DataNode[];
   } finally {
     loadingPermissions.value = false;
