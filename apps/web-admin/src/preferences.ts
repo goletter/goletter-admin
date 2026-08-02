@@ -32,6 +32,6 @@ export const overridesPreferences = defineOverridesPreferences({
     themeToggle: false,
     notification: false,
     globalSearch: false,
-    languageToggle: false,
+    languageToggle: true,
   },
 });
