@@ -1,5 +1,5 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
 import { $t } from '#/locales';
@@ -10,8 +10,8 @@ export enum SysMenuType {
   Catalog = 0,
   Menu = 1,
 }
-/* eslint-enable no-unused-vars */
 
+/* eslint-enable no-unused-vars */
 export function getMenuTypeOptions() {
   return [
     {
@@ -36,24 +36,22 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
-      fieldName: 'name',
-      label: '菜单名称',
+      fieldName: 'display_name',
+      label: $t('system.menu.menuName'),
       componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.roleName')}`,
+        placeholder: `${$t('common.pleaseEnter')}${$t('system.menu.menuName')}`,
       },
     },
   ];
 }
 
-export function useColumns<T = SystemMenuApi.SystemMenu>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useColumns(): VxeTableGridOptions<SystemMenuApi.SystemMenu>['columns'] {
   return [
     {
       align: 'left',
       field: 'display_name',
       fixed: 'left',
-      title: '菜单名称',
+      title: $t('system.menu.menuName'),
       treeNode: true,
       width: 250,
     },
@@ -112,29 +110,12 @@ export function useColumns<T = SystemMenuApi.SystemMenu>(
       width: 100,
     },
     {
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: $t('system.role.name'),
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            text: $t('common.edit'),
-          },
-          {
-            code: 'delete',
-            text: $t('common.delete'),
-          },
-        ],
-      },
-      field: 'operation',
+      field: 'action',
       fixed: 'right',
-      title: $t('common.operation'),
-      minWidth: 130,
+      minWidth: 200,
+      showOverflow: false,
+      slots: { default: 'action' },
+      title: '操作',
     },
   ];
 }

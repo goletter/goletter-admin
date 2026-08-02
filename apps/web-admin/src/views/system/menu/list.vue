@@ -3,15 +3,16 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
+import type { SystemRoleApi } from '#/api/system/role';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { IconifyIcon, Plus } from '@vben/icons';
-import { $t } from '@vben/locales';
 
 import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { deleteMenu, getMenuList, SystemMenuApi } from '#/api/system/menu';
+import { $t } from '#/locales';
 
 import { SysMenuType, useColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
@@ -28,13 +29,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
     submitOnChange: true,
   },
   gridOptions: {
-    columns: useColumns(onActionClick),
+    columns: useColumns(),
     height: 'auto',
     keepSource: true,
     size: 'large',
-    pagerConfig: {
-      enabled: false,
-    },
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
@@ -49,22 +47,25 @@ const [Grid, gridApi] = useVbenVxeGrid({
     rowConfig: {
       keyField: 'id',
     },
+
     toolbarConfig: {
       custom: true,
       export: false,
       refresh: { code: 'query' },
+      search: true,
       zoom: true,
     },
+
     treeConfig: {
       parentField: 'parent_id',
       rowField: 'id',
       transform: false,
       expandAll: true,
     },
-  } as VxeTableGridOptions<SystemMenuApi.SystemMenu>,
+  } as VxeTableGridOptions<SystemRoleApi.SystemRole>,
 });
 
-function onActionClick(e: OnActionClickParams<SystemMenuApi.SystemMenu>) {
+function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
   switch (e.code) {
     case 'delete': {
       onDelete(e.row);
@@ -74,23 +75,19 @@ function onActionClick(e: OnActionClickParams<SystemMenuApi.SystemMenu>) {
       onEdit(e.row);
       break;
     }
+    case 'permission': {
+      onEdit(e.row);
+      break;
+    }
   }
 }
 
-function onRefresh() {
-  gridApi.query();
-}
-function onEdit(row: SystemMenuApi.SystemMenu) {
+async function onEdit(row: SystemRoleApi.SystemRole) {
+  // const data = await getRoleDetail(row.id);
   formDrawerApi.setData(row).open();
 }
-function onCreate() {
-  formDrawerApi.setData({}).open();
-}
-function onAppend(row: SystemMenuApi.SystemMenu) {
-  formDrawerApi.setData({ parent_id: row.id }).open();
-}
 
-function onDelete(row: SystemMenuApi.SystemMenu) {
+function onDelete(row: SystemRoleApi.SystemRole) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
@@ -107,6 +104,18 @@ function onDelete(row: SystemMenuApi.SystemMenu) {
     .catch(() => {
       hideLoading();
     });
+}
+
+function onRefresh() {
+  gridApi.query();
+}
+
+function onCreate() {
+  formDrawerApi.setData({}).open();
+}
+
+function onAppend(row: SystemMenuApi.SystemMenu) {
+  formDrawerApi.setData({ parent_id: row.id }).open();
 }
 </script>
 <template>
@@ -138,7 +147,7 @@ function onDelete(row: SystemMenuApi.SystemMenu) {
       </template>
       <template #action="{ row }">
         <Button type="text" size="small" @click="onAppend(row)">
-          <span class="text-primary">新增下级菜单</span>
+          <span class="text-primary">新增下级</span>
         </Button>
         <Button type="text" size="small" @click="onEdit(row)">
           <span class="text-warning">编辑</span>
@@ -150,15 +159,3 @@ function onDelete(row: SystemMenuApi.SystemMenu) {
     </Grid>
   </Page>
 </template>
-<style lang="scss" scoped>
-.menu-badge {
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
-
-  & > :deep(div) {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-}
-</style>
