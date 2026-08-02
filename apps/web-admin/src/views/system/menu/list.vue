@@ -1,8 +1,5 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
@@ -65,23 +62,6 @@ const [Grid, gridApi] = useVbenVxeGrid({
   } as VxeTableGridOptions<SystemRoleApi.SystemRole>,
 });
 
-function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
-  switch (e.code) {
-    case 'delete': {
-      onDelete(e.row);
-      break;
-    }
-    case 'edit': {
-      onEdit(e.row);
-      break;
-    }
-    case 'permission': {
-      onEdit(e.row);
-      break;
-    }
-  }
-}
-
 async function onEdit(row: SystemRoleApi.SystemRole) {
   // const data = await getRoleDetail(row.id);
   formDrawerApi.setData(row).open();
@@ -131,7 +111,7 @@ function onAppend(row: SystemMenuApi.SystemMenu) {
       <template #type="{ row }">
         <span v-if="row.type === SysMenuType.Catalog">目录</span>
         <span v-else-if="row.type === SysMenuType.Menu">菜单</span>
-        <span v-else-if="row.tyep === SysMenuType.Button">按钮</span>
+        <span v-else-if="row.type === SysMenuType.Button">按钮</span>
       </template>
       <template #status="{ row }">
         <span v-if="row.status === 1" class="text-primary">已启用</span>
