@@ -92,6 +92,22 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     }),
   );
 
+  // 403 / 422：已登录则退出登录
+  client.addResponseInterceptor({
+    rejected: async (error) => {
+      const status = error?.response?.status;
+      if (status === 403 || status === 422) {
+        const accessStore = useAccessStore();
+        if (accessStore.accessToken) {
+          accessStore.setAccessToken(null);
+          const authStore = useAuthStore();
+          await authStore.logout();
+        }
+      }
+      throw error;
+    },
+  });
+
   // 通用的错误处理,如果没有进入上面的错误处理逻辑，就会进入这里
   client.addResponseInterceptor(
     errorMessageResponseInterceptor((msg: string, error) => {
