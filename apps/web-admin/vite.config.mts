@@ -27,6 +27,18 @@ export default defineConfig(async (config) => {
             // 本地有后端时优先用 localhost，远程代理会明显拖慢首屏接口
             target: apiTarget,
             ws: true,
+            configure: (proxy) => {
+              proxy.on('proxyRes', (proxyRes) => {
+                const contentType = proxyRes.headers['content-type'];
+                if (
+                  typeof contentType === 'string' &&
+                  contentType.includes('text/event-stream')
+                ) {
+                  proxyRes.headers['cache-control'] = 'no-cache';
+                  proxyRes.headers['x-accel-buffering'] = 'no';
+                }
+              });
+            },
           },
         },
       }

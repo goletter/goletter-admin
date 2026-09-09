@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { NotificationItem } from '@vben/layouts';
 
+import type { SseMenuBadgeMessage, SseNotificationMessage } from '#/api/sse';
+
 import { computed, ref, watch } from 'vue';
 
 import { AuthenticationLoginExpiredModal } from '@vben/common-ui';
@@ -14,83 +16,85 @@ import {
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
+import { useSse } from '#/hooks/use-sse';
 import { useAuthStore } from '#/store';
+import { setMenuBadge } from '#/utils/menu-badge';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
-const notifications = ref<NotificationItem[]>([
-  {
-    avatar: 'https://avatar.vercel.sh/vercel.svg?text=VB',
-    date: '3小时前',
-    isRead: true,
-    message: '描述信息描述信息描述信息',
-    title: '收到了 14 份新周报',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '刚刚',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '朱偏右 回复了你',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/1',
-    date: '2024-01-01',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '曲丽丽 评论了你',
-  },
-  {
-    avatar: 'https://avatar.vercel.sh/satori',
-    date: '1天前',
-    isRead: false,
-    message: '描述信息描述信息描述信息',
-    title: '代办提醒',
-  },
-]);
+const notifications = ref<NotificationItem[]>([]);
 
 const userStore = useUserStore();
 const authStore = useAuthStore();
 const accessStore = useAccessStore();
 const { destroyWatermark, updateWatermark } = useWatermark();
+const { connect: connectSse, close: closeSse } = useSse(null);
+
 const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
 );
 
-const menus = computed(() => [
-  // {
-  //   handler: () => {
-  //     openWindow(VBEN_DOC_URL, {
-  //       target: '_blank',
-  //     });
-  //   },
-  //   icon: BookOpenText,
-  //   text: $t('ui.widgets.document'),
-  // },
-  // {
-  //   handler: () => {
-  //     openWindow(VBEN_GITHUB_URL, {
-  //       target: '_blank',
-  //     });
-  //   },
-  //   icon: MdiGithub,
-  //   text: 'GitHub',
-  // },
-  // {
-  //   handler: () => {
-  //     openWindow(`${VBEN_GITHUB_URL}/issues`, {
-  //       target: '_blank',
-  //     });
-  //   },
-  //   icon: CircleHelp,
-  //   text: $t('ui.widgets.qa'),
-  // },
-]);
+const menus = computed(() => []);
 
 const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
 
+function isMenuBadgeMessage(data: unknown): data is SseMenuBadgeMessage {
+  return (
+    !!data &&
+    typeof data === 'object' &&
+    'path' in data &&
+    'count' in data &&
+    typeof (data as SseMenuBadgeMessage).path === 'string' &&
+    typeof (data as SseMenuBadgeMessage).count === 'number'
+  );
+}
+
+function isNotificationMessage(data: unknown): data is SseNotificationMessage {
+  return (
+    !!data &&
+    typeof data === 'object' &&
+    'title' in data &&
+    typeof (data as SseNotificationMessage).title === 'string'
+  );
+}
+
+function handleSseMessage(data: unknown, event: string) {
+  if (event === 'menu-badge' || isMenuBadgeMessage(data)) {
+    if (!isMenuBadgeMessage(data)) return;
+    setMenuBadge({
+      path: data.path,
+      count: data.count,
+      badgeType: data.badgeType,
+      badgeVariants: data.badgeVariants,
+    });
+    return;
+  }
+
+  if (event === 'notification' || isNotificationMessage(data)) {
+    if (!isNotificationMessage(data)) return;
+    notifications.value.unshift({
+      avatar: data.avatar ?? preferences.app.defaultAvatar,
+      date: data.date ?? new Date().toLocaleString(),
+      isRead: false,
+      message: data.message ?? '',
+      title: data.title,
+    });
+  }
+}
+
+function startSse() {
+  connectSse({
+    events: ['menu-badge', 'notification'],
+    onMessage: handleSseMessage,
+    onError: (error) => {
+      console.warn('[SSE]', error);
+    },
+  });
+}
+
 async function handleLogout() {
+  closeSse();
   await authStore.logout(false);
 }
 
@@ -101,6 +105,20 @@ function handleNoticeClear() {
 function handleMakeAll() {
   notifications.value.forEach((item) => (item.isRead = true));
 }
+
+// token + 菜单就绪后再连；登出自动断开
+watch(
+  () => [accessStore.accessToken, accessStore.isAccessChecked] as const,
+  ([token, checked]) => {
+    if (token && checked) {
+      startSse();
+    } else {
+      closeSse();
+    }
+  },
+  { immediate: true },
+);
+
 watch(
   () => preferences.app.watermark,
   async (enable) => {
