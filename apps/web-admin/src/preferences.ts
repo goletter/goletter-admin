@@ -30,7 +30,7 @@ export const overridesPreferences = defineOverridesPreferences({
   },
   widget: {
     themeToggle: false,
-    notification: false,
+    notification: true,
     globalSearch: false,
     languageToggle: true,
   },

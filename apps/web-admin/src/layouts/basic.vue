@@ -16,6 +16,8 @@ import {
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 
+import { notification as antNotification } from 'ant-design-vue';
+
 import { useSse } from '#/hooks/use-sse';
 import { useAuthStore } from '#/store';
 import { setMenuBadge } from '#/utils/menu-badge';
@@ -80,6 +82,11 @@ function handleSseMessage(data: unknown, event: string) {
       message: data.message ?? '',
       title: data.title,
     });
+    antNotification.info({
+      message: data.title,
+      description: data.message || undefined,
+      placement: 'topRight',
+    });
   }
 }
 
@@ -106,11 +113,13 @@ function handleMakeAll() {
   notifications.value.forEach((item) => (item.isRead = true));
 }
 
-// token + 菜单就绪后再连；登出自动断开
+const sseEnabled = import.meta.env.VITE_SSE_ENABLED === 'true';
+
+// token + 菜单就绪后再连；登出 / 关闭开关时断开
 watch(
   () => [accessStore.accessToken, accessStore.isAccessChecked] as const,
   ([token, checked]) => {
-    if (token && checked) {
+    if (sseEnabled && token && checked) {
       startSse();
     } else {
       closeSse();

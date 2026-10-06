@@ -5,9 +5,9 @@ import { requestClient } from '#/api/request';
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 /** 换票接口（需登录 Authorization） */
-const SSE_TICKET_URL = '/sse/ticket';
+const SSE_TICKET_URL = '/admin/sse/ticket';
 /** EventSource 长连接（用 ticket，不带 Authorization） */
-const SSE_CONNECT_PATH = '/sse/connect';
+const SSE_CONNECT_PATH = '/admin/sse/connect';
 
 export interface SseOptions {
   /**
