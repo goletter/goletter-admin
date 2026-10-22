@@ -21,10 +21,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
-      fieldName: 'user_id',
-      label: $t('subscribe.list.userId'),
+      fieldName: 'trade_no',
+      label: $t('subscribe.list.orderNo'),
       componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('subscribe.list.userId')}`,
+        placeholder: `${$t('common.pleaseEnter')}${$t('subscribe.list.orderNo')}`,
       },
     },
     {
