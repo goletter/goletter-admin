@@ -12,10 +12,10 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
-      fieldName: 'id',
-      label: $t('user.user.id'),
+      fieldName: 'name',
+      label: $t('user.user.name'),
       componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('user.user.id')}`,
+        placeholder: `${$t('common.pleaseEnter')}${$t('user.user.name')}`,
       },
     },
   ];
@@ -28,26 +28,16 @@ export function useColumns<T = SystemUserApi.SystemUser>(
     {
       field: 'id',
       title: $t('user.user.id'),
-      minWidth: 100,
+      width: 100,
     },
     {
       field: 'name',
-      title: $t('user.user.email'),
+      title: $t('user.user.name'),
       minWidth: 100,
     },
     {
-      field: 'phone',
-      title: $t('user.user.email'),
-      minWidth: 100,
-    },
-    {
-      field: 'father_height',
-      title: $t('user.user.email'),
-      minWidth: 100,
-    },
-    {
-      field: 'mother_height',
-      title: $t('user.user.email'),
+      field: 'sex',
+      title: $t('user.user.sex'),
       minWidth: 100,
     },
     {
@@ -61,11 +51,6 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       field: 'status',
       title: $t('common.status'),
       width: 100,
-    },
-    {
-      field: 'card_at',
-      title: $t('user.user.createdTime'),
-      minWidth: 100,
     },
     {
       field: 'created_at',

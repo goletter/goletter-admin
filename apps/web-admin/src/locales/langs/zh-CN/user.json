@@ -3,8 +3,9 @@
   "user": {
     "list": "用户列表",
     "title": "用户信息",
-    "id": "用户ID",
-    "email": "邮箱",
+    "id": "编号",
+    "name": "用户名",
+    "sex": "性别",
     "status": "状态",
     "createdTime": "注册时间"
   }

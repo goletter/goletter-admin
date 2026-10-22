@@ -1,0 +1,21 @@
+{
+  "title": "宝宝管理",
+  "baby": {
+    "list": "宝宝列表",
+    "title": "宝宝信息",
+    "id": "编号",
+    "nickname": "宝宝昵称",
+    "age": "年龄",
+    "height": "身高(cm)",
+    "weight": "体重(kg)",
+    "createdTime": "创建时间"
+  },
+  "babyRecord": {
+    "list": "宝宝记录",
+    "title": "宝宝信息",
+    "id": "编号",
+    "height": "身高(cm)",
+    "weight": "体重(kg)",
+    "createdTime": "录入时间"
+  }
+}

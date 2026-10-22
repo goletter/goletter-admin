@@ -1,23 +1,17 @@
 <script lang="ts" setup>
-import type {
-  OnActionClickParams,
-  VxeTableGridOptions,
-} from '#/adapter/vxe-table';
-import type { SystemRoleApi } from '#/api/system/role';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
+import type { BabyApi } from '#/api/baby/baby';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
-import { Plus } from '@vben/icons';
-
-import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteRole, getRoleList } from '#/api/system/role';
+import { getBabyRecordList } from '#/api/baby/record';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
 
-const [FormDrawer, formDrawerApi] = useVbenDrawer({
+const [FormDrawer] = useVbenDrawer({
   connectedComponent: Form,
   destroyOnClose: true,
 });
@@ -29,14 +23,15 @@ const [Grid, gridApi] = useVbenVxeGrid({
     submitOnChange: true,
   },
   gridOptions: {
-    columns: useColumns(onActionClick),
+    columns: useColumns(),
     height: 'auto',
     keepSource: true,
     size: 'large',
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getRoleList({
+          return await getBabyRecordList({
+            include: 'baby',
             page: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -55,70 +50,16 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
       zoom: true,
     },
-  } as VxeTableGridOptions<SystemRoleApi.SystemRole>,
+  } as VxeTableGridOptions<BabyApi.Type>,
 });
-
-function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
-  switch (e.code) {
-    case 'delete': {
-      onDelete(e.row);
-      break;
-    }
-    case 'edit': {
-      onEdit(e.row);
-      break;
-    }
-    case 'permission': {
-      onEdit(e.row);
-      break;
-    }
-  }
-}
-
-async function onEdit(row: SystemRoleApi.SystemRole) {
-  // const data = await getRoleDetail(row.id);
-  formDrawerApi.setData(row).open();
-}
-
-function onDelete(row: SystemRoleApi.SystemRole) {
-  const hideLoading = message.loading({
-    content: $t('ui.actionMessage.deleting', [row.name]),
-    duration: 0,
-    key: 'action_process_msg',
-  });
-  deleteRole(row.id)
-    .then(() => {
-      message.success({
-        content: $t('ui.actionMessage.deleteSuccess', [row.name]),
-        key: 'action_process_msg',
-      });
-      onRefresh();
-    })
-    .catch(() => {
-      hideLoading();
-    });
-}
 
 function onRefresh() {
   gridApi.query();
-}
-
-function onCreate() {
-  formDrawerApi.setData({}).open();
 }
 </script>
 <template>
   <Page auto-content-height>
     <FormDrawer @success="onRefresh" />
-    <Grid :table-title="$t('system.role.list')">
-      <template #toolbar-tools>
-        <AccessControl :codes="['RoleCreate']" type="code">
-          <Button type="primary" @click="onCreate">
-            <Plus class="size-5" />
-            {{ $t('ui.actionTitle.create', [$t('system.role.name')]) }}
-          </Button>
-        </AccessControl>
-      </template>
-    </Grid>
+    <Grid :table-title="$t('baby.babyRecord.list')" />
   </Page>
 </template>

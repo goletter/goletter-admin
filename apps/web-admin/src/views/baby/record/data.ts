@@ -1,12 +1,7 @@
 import type { VbenFormSchema } from '#/adapter/form';
-import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemRoleApi } from '#/api/system/role';
-
-import { useAccess } from '@vben/access';
+import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { $t } from '#/locales';
-
-const { hasAccessByCodes } = useAccess();
 
 export function useFormSchema(): VbenFormSchema[] {
   return [
@@ -42,71 +37,37 @@ export function useGridFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
-      fieldName: 'realname',
-      label: $t('system.role.roleName'),
+      fieldName: 'nickname',
+      label: $t('baby.baby.nickname'),
       componentProps: {
-        placeholder: `${$t('common.pleaseEnter')}${$t('system.role.roleName')}`,
+        placeholder: `${$t('common.pleaseEnter')}${$t('baby.baby.nickname')}`,
       },
     },
   ];
 }
 
-export function useColumns<T = SystemRoleApi.SystemRole>(
-  onActionClick: OnActionClickFn<T>,
-): VxeTableGridOptions['columns'] {
+export function useColumns(): VxeTableGridOptions['columns'] {
   return [
     {
-      type: 'seq',
-      title: $t('common.index'),
-      width: 60,
-      align: 'center',
+      field: 'id',
+      title: $t('baby.babyRecord.id'),
+      width: 100,
     },
     {
-      field: 'name',
-      title: $t('system.role.roleName'),
-      width: 200,
+      field: 'baby.nickname',
+      title: $t('baby.baby.nickname'),
     },
     {
-      field: 'display_name',
-      minWidth: 100,
-      title: $t('system.role.remark'),
+      field: 'height',
+      title: $t('baby.babyRecord.height'),
+    },
+    {
+      field: 'weight',
+      title: $t('baby.babyRecord.weight'),
     },
     {
       field: 'created_at',
-      title: $t('common.createTime'),
-      width: 200,
-    },
-    {
-      align: 'center',
-      cellRender: {
-        attrs: {
-          nameField: 'name',
-          nameTitle: $t('system.role.name'),
-          onClick: onActionClick,
-        },
-        name: 'CellOperation',
-        options: [
-          {
-            code: 'edit',
-            text: $t('common.edit'),
-            show: hasAccessByCodes(['RoleUpdate']),
-          },
-          // {
-          //   code: 'permission',
-          //   text: $t('common.setPermissions'),
-          //   // show: hasAccessByCodes(['20104']),
-          // },
-          {
-            code: 'delete',
-            text: $t('common.delete'),
-            show: hasAccessByCodes(['RoleDelete']),
-          },
-        ],
-      },
-      field: 'operation',
-      fixed: 'right',
-      title: $t('common.operation'),
-      minWidth: 130,
+      title: $t('baby.babyRecord.createdTime'),
     },
   ];
 }
