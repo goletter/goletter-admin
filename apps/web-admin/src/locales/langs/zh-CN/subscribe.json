@@ -11,8 +11,9 @@
   "list": {
     "title": "订阅信息",
     "listTitle": "订阅列表",
-    "orderNo": "订单编号",
-    "userId": "用户ID",
+    "id": "编号",
+    "orderNo": "订单号",
+    "userName": "用户名",
     "membershipPlan": "会员套餐",
     "paymentAmount": "支付金额",
     "startTime": "开通时间",

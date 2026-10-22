@@ -50,10 +50,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useColumns(): VxeTableGridOptions['columns'] {
   return [
     {
-      type: 'seq',
-      title: $t('common.index'),
-      width: 60,
-      align: 'center',
+      field: 'id',
+      title: $t('subscribe.list.id'),
+      width: 100,
     },
     {
       field: 'trade_no',
@@ -61,8 +60,8 @@ export function useColumns(): VxeTableGridOptions['columns'] {
       minWidth: 100,
     },
     {
-      field: 'user_id',
-      title: $t('subscribe.list.userId'),
+      field: 'user.name',
+      title: $t('subscribe.list.userName'),
       minWidth: 50,
     },
     {
@@ -88,11 +87,6 @@ export function useColumns(): VxeTableGridOptions['columns'] {
       field: 'created_at',
       title: $t('subscribe.list.startTime'),
       minWidth: 100,
-    },
-    {
-      field: 'expired_at',
-      title: $t('subscribe.list.endTime'),
-      width: 200,
     },
   ];
 }
