@@ -82,7 +82,7 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       minWidth: 100,
     },
     {
-      field: 'role.name',
+      field: 'role.display_name',
       title: $t('system.user.roleName'),
       minWidth: 100,
     },
